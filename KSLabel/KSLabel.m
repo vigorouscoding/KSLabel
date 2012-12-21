@@ -1,7 +1,7 @@
 //
 //  KSLabel.m
 //
-//  Created by VigorousCoding.com on 13.02.12.
+//  Created by Kai from VigorousCoding
 //  Copyright (c) 2012 VigorousCoding.com. All rights reserved.
 //
 
@@ -25,7 +25,7 @@
 //
 //  3. This notice may not be removed or altered from any source distribution.
 
-//  As a side note on using this code, you might consider giving some credit to me by
+//  If you are using this code, you might want to consider giving some credit to me by
 //	1) linking my website (http://www.vigorouscoding.com) from your app's website 
 //	2) or crediting me inside the app's credits page 
 //	3) or a tweet mentioning @modogo
@@ -33,9 +33,6 @@
 #import "KSLabel.h"
 
 @implementation KSLabel
-
-@synthesize drawOutline;
-@synthesize drawGradient;
 
 -(id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
@@ -46,6 +43,12 @@
     
     return self;
 }
+
+
+-(void) setGradientColors: (CGFloat [8]) colors {
+	memcpy(gradientColors, colors, 8 * sizeof (CGFloat));
+}
+
 
 - (void)drawTextInRect:(CGRect)rect {
 	CGContextRef context = UIGraphicsGetCurrentContext();  
@@ -58,7 +61,7 @@
 	
 	CGImageRef alphaMask = NULL;
 	
-	if (drawGradient) {
+	if ([self drawGradient]) {
 		// Create a mask from the text
 		alphaMask = CGBitmapContextCreateImage(context);
 		
@@ -74,14 +77,8 @@
 		// Clip the current context to our alphaMask
 		CGContextClipToMask(context, rect, alphaMask);
 		
-		// Create the gradient with these colors
-		CGFloat colors [] = {
-			22.0f/255.0f, 107.0f/255.0f, 168.0f/255.0f, 1.0,
-			71.0f/255.0f, 160.0f/255.0f, 220.0f/255.0f, 1.0
-		};
-		
 		CGColorSpaceRef baseSpace = CGColorSpaceCreateDeviceRGB();
-		CGGradientRef gradient = CGGradientCreateWithColorComponents(baseSpace, colors, NULL, 2);
+		CGGradientRef gradient = CGGradientCreateWithColorComponents(baseSpace, gradientColors, NULL, 2);
 		CGColorSpaceRelease(baseSpace), baseSpace = NULL;
 		
 		CGPoint startPoint = CGPointMake(CGRectGetMidX(rect), CGRectGetMinY(rect));
@@ -96,7 +93,7 @@
 		CGImageRelease(alphaMask);
 	}
 	
-	if (drawOutline) {
+	if ([self drawOutline]) {
 		// Create a mask from the text (with the gradient)
 		alphaMask = CGBitmapContextCreateImage(context);
 		
@@ -108,7 +105,8 @@
 		CGContextSetTextDrawingMode(context, kCGTextStroke);
 		
 		// Outline color
-		self.textColor = [UIColor whiteColor];
+		UIColor *tmpColor = self.textColor;
+		self.textColor = [self outlineColor];
 		
 		// notice the +1 for the y-coordinate. this is to account for the face that the outline appears to be thicker on top
 		[super drawTextInRect:CGRectMake(rect.origin.x, rect.origin.y+1, rect.size.width, rect.size.height)];
@@ -121,6 +119,9 @@
 		
 		// Clean up because ARC doesnt handle CG
 		CGImageRelease(alphaMask);
+		
+		// restore the original color
+		self.textColor = tmpColor;
 	}
 }
 @end
