@@ -25,6 +25,6 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 
 As a side note on using this code, you might consider giving some credit to me by
-1) linking my website (http://www.vigorouscoding.com) from your app's website 
-2) or crediting me inside the app's credits page 
-3) or a tweet mentioning @modogo
+1. linking my website (http://www.vigorouscoding.com) from your app's website 
+2. or crediting me inside the app's credits page 
+3. or a tweet mentioning @modogo
