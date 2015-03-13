@@ -1,5 +1,5 @@
 //
-//  KSLabel.m
+//  KSGradientLabel.m
 //
 //  Created by Kai from VigorousCoding
 //  Copyright (c) 2012 VigorousCoding.com. All rights reserved.
@@ -30,9 +30,9 @@
 //	2) or crediting me inside the app's credits page 
 //	3) or a tweet mentioning @modogo
 
-#import "KSLabel.h"
+#import "KSGradientLabel.h"
 
-@implementation KSLabel
+@implementation KSGradientLabel
 
 -(id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
@@ -44,11 +44,33 @@
     return self;
 }
 
-
--(void) setGradientColors: (CGFloat [8]) colors {
-	memcpy(gradientColors, colors, 8 * sizeof (CGFloat));
+-(void) setDirectionStart:(CGPoint)start
+                      end:(CGPoint) end {
+    startPoint = start;
+    endPoint = end;
+    self.customDirection = YES;
 }
 
+
+
+
+-(void) setGradientStartColor: (UIColor*)startColor
+                     endColor: (UIColor*)endColor{
+    CGFloat red1 = 0.0;
+    CGFloat green1 = 0.0;
+    CGFloat blue1 = 0.0;
+    CGFloat alpha1 = 0.0;
+    CGFloat red2 = 0.0;
+    CGFloat green2 = 0.0;
+    CGFloat blue2 = 0.0;
+    CGFloat alpha2 = 0.0;
+    [startColor getRed:&red1 green:&green1 blue:&blue1 alpha:&alpha1];
+    [endColor getRed:&red2 green:&green2 blue:&blue2 alpha:&alpha2];
+    CGFloat colors[] =
+        {red1, green1, blue1, alpha1, red2, green2, blue2, alpha2};
+	memcpy(gradientColors, colors, 8 * sizeof (CGFloat));
+    self.drawGradient = YES;
+}
 
 - (void)drawTextInRect:(CGRect)rect {
 	CGContextRef context = UIGraphicsGetCurrentContext();  
@@ -81,8 +103,10 @@
 		CGGradientRef gradient = CGGradientCreateWithColorComponents(baseSpace, gradientColors, NULL, 2);
 		CGColorSpaceRelease(baseSpace), baseSpace = NULL;
 		
-		CGPoint startPoint = CGPointMake(CGRectGetMidX(rect), CGRectGetMinY(rect));
-		CGPoint endPoint = CGPointMake(CGRectGetMidX(rect), CGRectGetMaxY(rect));
+		if (!self.customDirection) {
+			startPoint = CGPointMake(CGRectGetMidX(rect), CGRectGetMinY(rect));
+			endPoint = CGPointMake(CGRectGetMidX(rect), CGRectGetMaxY(rect));
+		}
 		
 		// Draw the gradient
 		CGContextDrawLinearGradient(context, gradient, startPoint, endPoint, 0);

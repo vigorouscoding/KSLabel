@@ -32,13 +32,21 @@
 
 #import <UIKit/UIKit.h>
 
-@interface KSLabel : UILabel {
+@interface KSGradientLabel : UILabel {
 	CGFloat gradientColors[8];
+	CGPoint startPoint;
+	CGPoint endPoint;
 }
 
 @property BOOL drawOutline;
 @property (strong, nonatomic) UIColor *outlineColor;
 @property (nonatomic) CGFloat outlineThickness;
+
 @property BOOL drawGradient;
--(void) setGradientColors: (CGFloat [8]) colors;
+-(void) setGradientStartColor: (UIColor*)startColor
+                     endColor: (UIColor*)endColor;
+
+@property BOOL customDirection;
+-(void) setDirectionStart:(CGPoint)start
+                      end:(CGPoint)end;
 @end
