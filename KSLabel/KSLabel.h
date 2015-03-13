@@ -38,7 +38,7 @@
 
 @property BOOL drawOutline;
 @property (strong, nonatomic) UIColor *outlineColor;
-
+@property (nonatomic) CGFloat outlineDimension;
 @property BOOL drawGradient;
 -(void) setGradientColors: (CGFloat [8]) colors;
 @end
