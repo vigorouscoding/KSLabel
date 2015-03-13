@@ -98,7 +98,7 @@
 		alphaMask = CGBitmapContextCreateImage(context);
 		
 		// Outline width
-		CGContextSetLineWidth(context, self.outlineDimension);
+		CGContextSetLineWidth(context, self.outlineThickness);
 		CGContextSetLineJoin(context, kCGLineJoinRound);
 		
 		// Set the drawing method to stroke
